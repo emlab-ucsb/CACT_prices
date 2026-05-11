@@ -39,7 +39,7 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build commit message
+      - name: Build commit / PR text
         if: steps.diff.outputs.changed == 'true'
         id: msg
         run: |
@@ -47,9 +47,10 @@ jobs:
           dec_last=$(tail -1 figure/input/cca_v26_dec26_ice.csv | tr -d '"')
           may_date=${may_last%%,*}; may_price=${may_last##*,}
           dec_date=${dec_last%%,*}; dec_price=${dec_last##*,}
-          subject="ICE CCA V26: may26 \$${may_price} (${may_date}), dec26 \$${dec_price} (${dec_date})"
+          headline="may26 \$${may_price} (${may_date}), dec26 \$${dec_price} (${dec_date})"
           {
-            echo "subject=${subject}"
+            echo "subject=ICE CCA V26: ${headline}"
+            echo "pr_title=ICE CCA V26 updates — ${headline}"
             echo "body<<EOF"
             echo "Latest settlement prices:"
             echo ""
@@ -57,6 +58,16 @@ jobs:
             echo "  dec26: \$${dec_price}  (${dec_date})"
             echo ""
             echo "Source: ICE product guide historical API."
+            echo "EOF"
+            echo "pr_body<<EOF"
+            echo "Automated daily updates to the CCA V26 settlement-price CSVs in figure/input/."
+            echo ""
+            echo "Latest settlement prices:"
+            echo ""
+            echo "  may26: \$${may_price}  (${may_date})"
+            echo "  dec26: \$${dec_price}  (${dec_date})"
+            echo ""
+            echo "Each new commit on this branch adds the latest row(s); the commit subject carries the values, so PR subscribers/reviewers get them by email."
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
@@ -76,11 +87,17 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_TITLE: ${{ steps.msg.outputs.pr_title }}
+          PR_BODY: ${{ steps.msg.outputs.pr_body }}
         run: |
-          if ! gh pr view ice-data-updates --json number --jq .number >/dev/null 2>&1; then
-            gh pr create \
-              --base main \
-              --head ice-data-updates \
-              --title "Daily ICE CCA V26 price updates" \
-              --body 'Automated daily updates to the CCA V26 settlement-price CSVs in figure/input/. Each new commit adds the latest row(s); subscribe to this PR to get an email whenever prices update.'
+          if gh pr view ice-data-updates --json number --jq .number >/dev/null 2>&1; then
+            echo "PR already open; nothing to do."
+            exit 0
           fi
+          gh pr create \
+            --base main \
+            --head ice-data-updates \
+            --title "$PR_TITLE" \
+            --body "$PR_BODY"
+          gh pr edit ice-data-updates --add-reviewer kylemeng,jmwingenroth \
+            || echo "::warning::could not add one or more reviewers (must be repo collaborators)"
