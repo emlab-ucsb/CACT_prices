@@ -70,7 +70,7 @@ twoway line px_last date, lcolor(navy)                                          
     text(`ymid' `d45_lbl' "45-day amendments", orientation(vertical) size(vsmall)) ///
     text(`ymid' `d15_lbl' "15-day amendments", orientation(vertical) size(vsmall)) ///
     text(`ymid2' `dab_lbl' "AB1207 passed",     orientation(vertical) size(vsmall)) ///
-    caption("Source: Intercontinental Exchange. Graph by Kyle Meng and Jordan Wingenroth, UCSB Environmental Markets Lab (emLab).", ///
+    caption("Source: Intercontinental Exchange. Graph by Kyle Meng, Shradhey Prasad, and Jordan Wingenroth, UCSB Environmental Markets Lab (emLab).", ///
     position(5) justification(right) size(vsmall))
 
     graph export "`root'/figure/output/fig_price_may26.png", ///
