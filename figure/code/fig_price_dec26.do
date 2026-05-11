@@ -27,6 +27,9 @@ rename date2 date
 * Sort chronologically
 sort date
 
+* Restrict to the charting window (Jan 2025 onward)
+drop if date < daily("01jan2025", "DMY")
+
 * ── Time-series setup ─────────────────────────────────────────────────────────
 tsset date, daily
 
@@ -36,7 +39,7 @@ set scheme plotplain
 local d45    = daily("20jan2026", "DMY")
 local d15    = daily("14apr2026", "DMY")
 local dab    = daily("13sep2025", "DMY")
-local dstart = daily("31dec2024", "DMY")
+local dstart = daily("01jan2025", "DMY")
 local dend   = daily("31apr2026", "DMY")
 local pf     = 27.94
 local pf_y   = `pf' + 0.35

@@ -9,7 +9,7 @@ set -euo pipefail
 
 OUT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../input" && pwd)"
 UA="Mozilla/5.0 (compatible; CACT-prices-bot/1.0; +https://github.com/emlab-ucsb/cact_prices)"
-SPAN=2   # ICE "2 YEARS" of daily bars
+SPAN=3   # ICE historical span: 3 = longest available daily history
 
 # contract label -> ICE marketId  (May 2026 and Dec 2026 deliveries)
 declare -A MARKETS=(

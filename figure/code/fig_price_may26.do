@@ -27,6 +27,9 @@ rename date2 date
 * Sort chronologically
 sort date
 
+* Restrict to the charting window (Jan 2025 onward)
+drop if date < daily("01jan2025", "DMY")
+
 * ── Time-series setup ─────────────────────────────────────────────────────────
 tsset date, daily
 
@@ -36,7 +39,7 @@ set scheme plotplain
 local d45    = daily("20jan2026", "DMY")
 local d15    = daily("14apr2026", "DMY")
 local dab    = daily("13sep2025", "DMY")
-local dstart = daily("30apr2025", "DMY")
+local dstart = daily("01jan2025", "DMY")
 local dend   = daily("31apr2026", "DMY")
 local pf     = 27.94
 local pf_y   = `pf' + 0.25
@@ -51,7 +54,7 @@ local dab_lbl = `dab' - 4
 
 * Build list of 1st-of-month dates from Jan 2025 through May 2026
 local xlabs
-forval ym = `=ym(2025,5)'/`=ym(2026,5)' {
+forval ym = `=ym(2025,1)'/`=ym(2026,5)' {
     local xlabs `xlabs' `=dofm(`ym')'
 }
 
@@ -62,7 +65,7 @@ twoway line px_last date, lcolor(navy)                                          
     xlabel(`xlabs', format(%tdMon_CCYY) angle(45))                             ///
     ylabel(, format(%9.0f) nogrid)                                                     ///
     xscale(range(`dstart' `dend'))                                             ///
-    yscale(range(27.5 34.0))                                                       ///
+    yscale(range(27.5 38.5))                                                       ///
     xline(`d45', lcolor(red) lpattern(solid))                                  ///
     xline(`d15', lcolor(red) lpattern(solid))                                  ///
     xline(`dab', lcolor(red) lpattern(solid))                                  ///
