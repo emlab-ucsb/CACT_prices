@@ -1,0 +1,83 @@
+name: Update ICE prices
+
+on:
+  schedule:
+    # 23:30 UTC weekdays — well after ICE settlement (which posts ~21:00 UTC)
+    - cron: '30 23 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Switch to ice-data-updates branch
+        run: |
+          git fetch origin ice-data-updates || true
+          if git show-ref --verify --quiet refs/remotes/origin/ice-data-updates; then
+            git checkout -B ice-data-updates origin/ice-data-updates
+          else
+            git checkout -B ice-data-updates origin/main
+          fi
+
+      - name: Fetch latest ICE prices
+        run: bash figure/code/fetch_ice_prices.sh
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet -- figure/input; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build commit message
+        if: steps.diff.outputs.changed == 'true'
+        id: msg
+        run: |
+          may_last=$(tail -1 figure/input/cca_v26_may26_ice.csv | tr -d '"')
+          dec_last=$(tail -1 figure/input/cca_v26_dec26_ice.csv | tr -d '"')
+          may_date=${may_last%%,*}; may_price=${may_last##*,}
+          dec_date=${dec_last%%,*}; dec_price=${dec_last##*,}
+          subject="ICE CCA V26: may26 \$${may_price} (${may_date}), dec26 \$${dec_price} (${dec_date})"
+          {
+            echo "subject=${subject}"
+            echo "body<<EOF"
+            echo "Latest settlement prices:"
+            echo ""
+            echo "  may26: \$${may_price}  (${may_date})"
+            echo "  dec26: \$${dec_price}  (${dec_date})"
+            echo ""
+            echo "Source: ICE product guide historical API."
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add figure/input
+          git commit -m "${{ steps.msg.outputs.subject }}" -m "${{ steps.msg.outputs.body }}"
+          git push origin ice-data-updates
+
+      - name: Open PR if one is not already open
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ! gh pr view ice-data-updates --json number --jq .number >/dev/null 2>&1; then
+            gh pr create \
+              --base main \
+              --head ice-data-updates \
+              --title "Daily ICE CCA V26 price updates" \
+              --body "Automated daily updates to the CCA V26 settlement-price CSVs in \`figure/input/\`. Each new commit adds the latest row(s); subscribe to this PR to get an email whenever prices update."
+          fi
