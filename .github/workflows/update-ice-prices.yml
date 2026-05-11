@@ -90,8 +90,9 @@ jobs:
           PR_TITLE: ${{ steps.msg.outputs.pr_title }}
           PR_BODY: ${{ steps.msg.outputs.pr_body }}
         run: |
-          if gh pr view ice-data-updates --json number --jq .number >/dev/null 2>&1; then
-            echo "PR already open; nothing to do."
+          open_prs=$(gh pr list --head ice-data-updates --state open --json number --jq 'length')
+          if [ "$open_prs" -gt 0 ]; then
+            echo "An open PR for ice-data-updates already exists; nothing to do."
             exit 0
           fi
           gh pr create \
