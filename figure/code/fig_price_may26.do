@@ -6,11 +6,11 @@ clear all
 set more off
 
 * ── Project root ──────────────────────────────────────────────────────────────
-local root "/Users/kylemeng/Dropbox/work/research/policy/CACT/prices"
+local root "/Users/kylemeng/Dropbox/work/research/policy/CACT/CACT_prices/"
 
 * ── Import ────────────────────────────────────────────────────────────────────
 * Rows 1–6 are Bloomberg metadata; row 7 is the variable-name header.
-import delimited "`root'/figure/input/CCA v26 Front Month.csv", ///
+import delimited "`root'/figure/input/CCA v26 May26.csv", ///
     varnames(7) encoding(UTF-8) clear
 
 * ── Clean ─────────────────────────────────────────────────────────────────────

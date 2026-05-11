@@ -6,7 +6,7 @@ clear all
 set more off
 
 * ── Project root ──────────────────────────────────────────────────────────────
-local root "/Users/kylemeng/Dropbox/work/research/policy/CACT/prices"
+local root "/Users/kylemeng/Dropbox/work/research/policy/CACT/CACT_prices/"
 
 * ── Import ────────────────────────────────────────────────────────────────────
 * Rows 1–6 are Bloomberg metadata; row 7 is the variable-name header.
