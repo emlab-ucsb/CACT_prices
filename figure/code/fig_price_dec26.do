@@ -1,6 +1,6 @@
-* Time series plot: CCA December 2026 futures (KBCZ26)
-* Input:  figure/input/CCA v26 Dec26.csv
-* Output: figure/cca_dec26_timeseries.png
+* Time series plot: CCA December 2026 futures
+* Input:  figure/input/cca_v26_dec26_ice.csv
+* Output: figure/output/fig_price_dec26.png
 
 clear all
 set more off
@@ -9,16 +9,17 @@ set more off
 local root "/Users/kylemeng/Dropbox/work/research/policy/CACT/CACT_prices/"
 
 * ── Import ────────────────────────────────────────────────────────────────────
-* Rows 1–6 are Bloomberg metadata; row 7 is the variable-name header.
-import delimited "`root'/figure/input/CCA v26 Dec26.csv", ///
-    varnames(7) encoding(UTF-8) clear
+* ICE export: row 1 is the variable-name header (date,settlement_price).
+import delimited "`root'/figure/input/cca_v26_dec26_ice.csv", ///
+    varnames(1) encoding(UTF-8) clear
+rename settlement_price px_last
 
 * ── Clean ─────────────────────────────────────────────────────────────────────
 * Drop any rows where date is missing (e.g. trailing blank lines)
 drop if missing(date)
 
-* Convert M/D/YY string to Stata daily date
-gen date2 = date(date, "MDY", 2099)
+* Convert YYYY-MM-DD string to Stata daily date
+gen date2 = date(date, "YMD")
 format date2 %td
 drop date
 rename date2 date
