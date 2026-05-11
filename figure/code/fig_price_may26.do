@@ -80,9 +80,9 @@ twoway (line px_last date, lcolor(navy))                                       /
     xline(`d15', lcolor(red) lpattern(solid))                                  ///
     xline(`dab', lcolor(red) lpattern(solid))                                  ///
     text(`pf_y' `dstart' "Auction price floor", placement(e) size(small))      ///
-    text(`ymid' `d45_lbl' "45-day amendments", orientation(vertical) size(vsmall)) ///
-    text(`ymid' `d15_lbl' "15-day amendments", orientation(vertical) size(vsmall)) ///
-    text(`ymid2' `dab_lbl' "AB1207 passed",     orientation(vertical) size(vsmall)) ///
+    text(40 `d45' "45-day amendments", orientation(vertical) placement(sw) size(vsmall)) ///
+    text(40 `d15' "15-day amendments", orientation(vertical) placement(sw) size(vsmall)) ///
+    text(40 `dab' "AB1207 passed",     orientation(vertical) placement(sw) size(vsmall)) ///
     caption("Source: Intercontinental Exchange. Graph by Kyle Meng, Shradhey Prasad, and Jordan Wingenroth, UCSB Environmental Markets Lab (emLab).", ///
     position(5) justification(right) size(vsmall))
 
