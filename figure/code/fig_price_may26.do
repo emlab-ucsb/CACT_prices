@@ -48,10 +48,7 @@ local dstart = daily("01jan2025", "DMY")
 local dend   = daily("31apr2026", "DMY")
 local pf25   = 25.87
 local pf26   = 27.94
-local pf25_y = `pf25' + 0.25
-local pf26_y = `pf26' + 0.25
-local pf25_x = daily("29oct2025", "DMY")
-local pf26_x = daily("01mar2026", "DMY")
+local pf_y   = `pf25' + 0.25
 
 * Step-function auction price floor: $`pf25' in 2025, $`pf26' in 2026
 gen floor = cond(year(date) <= 2025, `pf25', `pf26')
@@ -82,8 +79,7 @@ twoway (line px_last date, lcolor(navy))                                       /
     xline(`d45', lcolor(red) lpattern(solid))                                  ///
     xline(`d15', lcolor(red) lpattern(solid))                                  ///
     xline(`dab', lcolor(red) lpattern(solid))                                  ///
-    text(`pf25_y' `pf25_x' "Auction price floor (2025)", placement(e) size(small)) ///
-    text(`pf26_y' `pf26_x' "Auction price floor (2026)", placement(e) size(small)) ///
+    text(`pf_y' `dstart' "Auction price floor", placement(e) size(small))      ///
     text(`ymid' `d45_lbl' "45-day amendments", orientation(vertical) size(vsmall)) ///
     text(`ymid' `d15_lbl' "15-day amendments", orientation(vertical) size(vsmall)) ///
     text(`ymid2' `dab_lbl' "AB1207 passed",     orientation(vertical) size(vsmall)) ///
