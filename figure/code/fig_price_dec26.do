@@ -6,7 +6,12 @@ clear all
 set more off
 
 * ── Project root ──────────────────────────────────────────────────────────────
+if c(username) == "kylemeng" {
 local root "/Users/kylemeng/Dropbox/work/research/policy/CACT/CACT_prices/"
+}
+else if c(username) == "jordanwingenroth" {
+    local root "/Users/jordanwingenroth/code/CACT_prices/"
+}
 
 * ── Import ────────────────────────────────────────────────────────────────────
 * ICE export: row 1 is the variable-name header (date,settlement_price).
