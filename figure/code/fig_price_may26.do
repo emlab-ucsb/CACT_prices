@@ -46,9 +46,15 @@ local d15    = daily("14apr2026", "DMY")
 local dab    = daily("13sep2025", "DMY")
 local dstart = daily("01jan2025", "DMY")
 local dend   = daily("31apr2026", "DMY")
-local pf     = 27.94
-local pf_y   = `pf' + 0.25
-local pf_x  = daily("29oct2025", "DMY")
+local pf25   = 25.87
+local pf26   = 27.94
+local pf25_y = `pf25' + 0.25
+local pf26_y = `pf26' + 0.25
+local pf25_x = daily("29oct2025", "DMY")
+local pf26_x = daily("01mar2026", "DMY")
+
+* Step-function auction price floor: $`pf25' in 2025, $`pf26' in 2026
+gen floor = cond(year(date) <= 2025, `pf25', `pf26')
 
 quietly summarize px_last
 local ymid    = (r(max) + r(min)) / 2 + 2.7
@@ -63,19 +69,21 @@ forval ym = `=ym(2025,1)'/`=ym(2026,5)' {
     local xlabs `xlabs' `=dofm(`ym')'
 }
 
-twoway line px_last date, lcolor(navy)                                                      ///
+twoway (line px_last date, lcolor(navy))                                       ///
+       (line floor date, connect(J) lcolor(gs9) lpattern(dash) msymbol(none)), ///
+    legend(off)                                                                ///
     title("California Carbon Allowance Vintage 2026 Future (May 2026 delivery)")         ///
     xtitle("")                                                                  ///
     ytitle("Allowance price ($)")                                             ///
     xlabel(`xlabs', format(%tdMon_CCYY) angle(45))                             ///
     ylabel(, format(%9.0f) nogrid)                                                     ///
     xscale(range(`dstart' `dend'))                                             ///
-    yscale(range(27.5 38.5))                                                       ///
+    yscale(range(25 38.5))                                                         ///
     xline(`d45', lcolor(red) lpattern(solid))                                  ///
     xline(`d15', lcolor(red) lpattern(solid))                                  ///
     xline(`dab', lcolor(red) lpattern(solid))                                  ///
-    yline(`pf',  lcolor(gs9) lpattern(dash))                                   ///
-    text(`pf_y' `pf_x' "Auction price floor", placement(e) size(small))         ///
+    text(`pf25_y' `pf25_x' "Auction price floor (2025)", placement(e) size(small)) ///
+    text(`pf26_y' `pf26_x' "Auction price floor (2026)", placement(e) size(small)) ///
     text(`ymid' `d45_lbl' "45-day amendments", orientation(vertical) size(vsmall)) ///
     text(`ymid' `d15_lbl' "15-day amendments", orientation(vertical) size(vsmall)) ///
     text(`ymid2' `dab_lbl' "AB1207 passed",     orientation(vertical) size(vsmall)) ///
