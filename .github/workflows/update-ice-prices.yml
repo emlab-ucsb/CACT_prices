@@ -62,11 +62,14 @@ jobs:
 
       - name: Commit and push
         if: steps.diff.outputs.changed == 'true'
+        env:
+          COMMIT_SUBJECT: ${{ steps.msg.outputs.subject }}
+          COMMIT_BODY: ${{ steps.msg.outputs.body }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add figure/input
-          git commit -m "${{ steps.msg.outputs.subject }}" -m "${{ steps.msg.outputs.body }}"
+          git commit -m "$COMMIT_SUBJECT" -m "$COMMIT_BODY"
           git push origin ice-data-updates
 
       - name: Open PR if one is not already open
@@ -79,5 +82,5 @@ jobs:
               --base main \
               --head ice-data-updates \
               --title "Daily ICE CCA V26 price updates" \
-              --body "Automated daily updates to the CCA V26 settlement-price CSVs in \`figure/input/\`. Each new commit adds the latest row(s); subscribe to this PR to get an email whenever prices update."
+              --body 'Automated daily updates to the CCA V26 settlement-price CSVs in figure/input/. Each new commit adds the latest row(s); subscribe to this PR to get an email whenever prices update.'
           fi
