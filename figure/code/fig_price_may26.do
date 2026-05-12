@@ -33,7 +33,7 @@ rename date2 date
 sort date
 
 * Restrict to the charting window (Jan 2025 onward)
-drop if date < daily("01jan2025", "DMY")
+drop if date < daily("01may2025", "DMY")
 
 * ── Time-series setup ─────────────────────────────────────────────────────────
 tsset date, daily
@@ -44,11 +44,12 @@ set scheme plotplain
 local d45    = daily("20jan2026", "DMY")
 local d15    = daily("14apr2026", "DMY")
 local dab    = daily("13sep2025", "DMY")
-local dstart = daily("01jan2025", "DMY")
+local dstart = daily("01may2025", "DMY")
 local dend   = daily("31apr2026", "DMY")
 local pf25   = 25.87
 local pf26   = 27.94
 local pf_y   = `pf25' + 0.25
+local d_x   = 34.3
 
 * Step-function auction price floor: $`pf25' in 2025, $`pf26' in 2026
 gen floor = cond(year(date) <= 2025, `pf25', `pf26')
@@ -62,7 +63,7 @@ local dab_lbl = `dab' - 4
 
 * Build list of 1st-of-month dates from Jan 2025 through May 2026
 local xlabs
-forval ym = `=ym(2025,1)'/`=ym(2026,5)' {
+forval ym = `=ym(2025,5)'/`=ym(2026,5)' {
     local xlabs `xlabs' `=dofm(`ym')'
 }
 
@@ -73,16 +74,16 @@ twoway (line px_last date, lcolor(navy))                                       /
     xtitle("")                                                                  ///
     ytitle("Allowance price ($)")                                             ///
     xlabel(`xlabs', format(%tdMon_CCYY) angle(45))                             ///
-    ylabel(, format(%9.0f) nogrid)                                                     ///
+    ylabel(26(2)34, format(%9.0f) nogrid)                                                     ///
     xscale(range(`dstart' `dend'))                                             ///
-    yscale(range(25 38.5))                                                         ///
+    yscale(range(25.9 34.0))                                                         ///
     xline(`d45', lcolor(red) lpattern(solid))                                  ///
     xline(`d15', lcolor(red) lpattern(solid))                                  ///
     xline(`dab', lcolor(red) lpattern(solid))                                  ///
     text(`pf_y' `dstart' "Auction price floor", placement(e) size(small))      ///
-    text(40 `d45' "45-day amendments", orientation(vertical) placement(sw) size(vsmall)) ///
-    text(40 `d15' "15-day amendments", orientation(vertical) placement(sw) size(vsmall)) ///
-    text(40 `dab' "AB1207 passed",     orientation(vertical) placement(sw) size(vsmall)) ///
+    text(`d_x' `d45' "45-day amendments", orientation(vertical) placement(sw) size(vsmall)) ///
+    text(`d_x' `d15' "15-day amendments", orientation(vertical) placement(sw) size(vsmall)) ///
+    text(`d_x' `dab' "AB1207 passes",     orientation(vertical) placement(sw) size(vsmall)) ///
     caption("Source: Intercontinental Exchange. Graph by Kyle Meng, Shradhey Prasad, and Jordan Wingenroth, UCSB Environmental Markets Lab (emLab).", ///
     position(5) justification(right) size(vsmall))
 
