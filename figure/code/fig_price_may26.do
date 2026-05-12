@@ -44,6 +44,7 @@ set scheme plotplain
 local d45    = daily("20jan2026", "DMY")
 local d15    = daily("14apr2026", "DMY")
 local dab    = daily("13sep2025", "DMY")
+local dauc   = daily("20may2026", "DMY")
 local dstart = daily("01may2025", "DMY")
 local dend   = daily("31apr2026", "DMY")
 local pf25   = 25.87
@@ -63,7 +64,7 @@ local dab_lbl = `dab' - 4
 
 * Build list of 1st-of-month dates from Jan 2025 through May 2026
 local xlabs
-forval ym = `=ym(2025,5)'/`=ym(2026,5)' {
+forval ym = `=ym(2025,5)'/`=ym(2026,6)' {
     local xlabs `xlabs' `=dofm(`ym')'
 }
 
@@ -80,10 +81,12 @@ twoway (line px_last date, lcolor(navy))                                       /
     xline(`d45', lcolor(red) lpattern(solid))                                  ///
     xline(`d15', lcolor(red) lpattern(solid))                                  ///
     xline(`dab', lcolor(red) lpattern(solid))                                  ///
+    xline(`dauc', lcolor(red) lpattern(solid))                                 ///
     text(`pf_y' `dstart' "Auction price floor", placement(e) size(small))      ///
     text(`d_x' `d45' "45-day amendments", orientation(vertical) placement(sw) size(vsmall)) ///
     text(`d_x' `d15' "15-day amendments", orientation(vertical) placement(sw) size(vsmall)) ///
     text(`d_x' `dab' "AB1207 passes",     orientation(vertical) placement(sw) size(vsmall)) ///
+    text(`d_x' `dauc' "Next CARB auction", orientation(vertical) placement(sw) size(vsmall)) ///
     caption("Source: Intercontinental Exchange. Graph by Kyle Meng, Shradhey Prasad, and Jordan Wingenroth, UCSB Environmental Markets Lab (emLab).", ///
     position(5) justification(right) size(vsmall))
 
