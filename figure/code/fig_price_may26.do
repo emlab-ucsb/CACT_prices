@@ -1,21 +1,15 @@
 * Time series plot: CCA May 2026 futures
-* Input:  figure/input/cca_v26_may26_ice.csv
-* Output: figure/output/fig_price_may26.png
+* Input:  ../input/cca_v26_may26_ice.csv    (paths are relative to figure/code/)
+* Output: ../output/fig_price_may26.png
+*
+* Run from figure/code/ — `make may26`, or in interactive Stata `cd` here first.
 
 clear all
 set more off
 
-* ── Project root ──────────────────────────────────────────────────────────────
-if c(username) == "kylemeng" {
-local root "/Users/kylemeng/Dropbox/work/research/policy/CACT/CACT_prices/"
-}
-else if c(username) == "jordanwingenroth" {
-    local root "/Users/jordanwingenroth/code/CACT_prices/"
-}
-
 * ── Import ────────────────────────────────────────────────────────────────────
 * ICE export: row 1 is the variable-name header (date,settlement_price).
-import delimited "`root'/figure/input/cca_v26_may26_ice.csv", ///
+import delimited "../input/cca_v26_may26_ice.csv", ///
     varnames(1) encoding(UTF-8) clear
 rename settlement_price px_last
 
@@ -90,5 +84,5 @@ twoway (line px_last date, lcolor(navy))                                       /
     caption("Source: Intercontinental Exchange. Graph by Kyle Meng, Shradhey Prasad, and Jordan Wingenroth, UCSB Environmental Markets Lab (emLab).", ///
     position(5) justification(right) size(vsmall))
 
-    graph export "`root'/figure/output/fig_price_may26.png", ///
+    graph export "../output/fig_price_may26.png", ///
     replace width(1400)
