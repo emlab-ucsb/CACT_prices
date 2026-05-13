@@ -16,8 +16,19 @@ OUTPUT := ../output
 
 FIGS := $(OUTPUT)/fig_price_dec26.png $(OUTPUT)/fig_price_may26.png
 
-.PHONY: all dec26 may26 clean
+.PHONY: all dec26 may26 pull-ice refresh clean
 all: $(FIGS)
+
+pull-ice:
+	@if git fetch origin ice-data-updates 2>/dev/null; then \
+		git merge --squash FETCH_HEAD; \
+	else \
+		printf '\033[1mNo ice-data-updates branch found, probably no new price data\033[0m\n'; \
+	fi
+
+update:
+	$(MAKE) pull-ice
+	$(MAKE) all
 
 dec26: $(OUTPUT)/fig_price_dec26.png
 may26: $(OUTPUT)/fig_price_may26.png
